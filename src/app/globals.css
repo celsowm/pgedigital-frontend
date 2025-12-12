@@ -1,9 +1,14 @@
+@reference "tailwindcss";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   color-scheme: light;
+  --brand-primary: #1d4ed8;
+  --brand-secondary: #0ea5e9;
+  --brand-surface: #0f172a;
 }
 
 body {
@@ -13,25 +18,40 @@ body {
 }
 
 a {
-  @apply text-brand-primary transition hover:text-brand-secondary;
+  @apply transition;
+  color: var(--brand-primary);
 }
 
-.card {
-  @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+a:hover {
+  color: var(--brand-secondary);
 }
 
-.btn {
-  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
-}
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
 
-.btn-primary {
-  @apply btn bg-brand-primary text-white hover:bg-blue-700 focus-visible:outline-brand-primary;
-}
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
 
-.btn-secondary {
-  @apply btn bg-slate-900 text-white hover:bg-slate-800 focus-visible:outline-slate-900;
-}
+  .btn-primary {
+    @apply text-white hover:bg-blue-700;
+    background-color: var(--brand-primary);
+  }
 
-.btn-ghost {
-  @apply btn bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:outline-slate-400;
+  .btn-primary:focus-visible {
+    outline-color: var(--brand-primary);
+  }
+
+  .btn-secondary {
+    @apply bg-slate-900 text-white hover:bg-slate-800 focus-visible:outline-slate-900;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:outline-slate-400;
+  }
 }

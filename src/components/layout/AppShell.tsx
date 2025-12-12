@@ -2,11 +2,11 @@ import classNames from "classnames";
 import Link from "next/link";
 import { ReactNode } from "react";
 
+import { enabledModules } from "@/config/modules";
+
 type AppShellProps = {
   children: ReactNode;
 };
-
-const navigation = [{ name: "Notas de Versao", href: "/nota-versao" }];
 
 export function AppShell({ children }: AppShellProps) {
   return (
@@ -20,9 +20,9 @@ export function AppShell({ children }: AppShellProps) {
             PGE Digital
           </Link>
           <nav className="flex items-center gap-3 text-sm font-medium text-slate-700">
-            {navigation.map((item) => (
+            {enabledModules.map((item) => (
               <Link
-                key={item.name}
+                key={item.key}
                 href={item.href}
                 className={classNames(
                   "rounded-lg px-3 py-2 transition hover:bg-slate-100",

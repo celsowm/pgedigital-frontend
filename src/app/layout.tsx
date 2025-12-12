@@ -8,8 +8,9 @@ import { Providers } from "./providers";
 import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
-  title: "PGE Digital | Notas de Versao",
-  description: "Frontend Next.js + Tailwind para gerenciar notas de versao da PGE-RJ.",
+  title: "PGE Digital | Backoffice",
+  description:
+    "Frontend Next.js + Tailwind para gerenciar modulos administrativos da PGE-RJ.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

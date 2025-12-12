@@ -2,15 +2,24 @@
 
 import classNames from "classnames";
 
-import { NotaVersaoResponse } from "@/domain/models/notaVersao";
+import {
+  NotaVersaoResponse,
+  PaginationMeta,
+} from "@/domain/models/notaVersao";
 
 type NotaVersaoListProps = {
   data: NotaVersaoResponse[];
+  pagination?: PaginationMeta;
   onEdit: (nota: NotaVersaoResponse) => void;
   onDelete: (nota: NotaVersaoResponse) => void;
 };
 
-export function NotaVersaoList({ data, onEdit, onDelete }: NotaVersaoListProps) {
+export function NotaVersaoList({
+  data,
+  pagination,
+  onEdit,
+  onDelete,
+}: NotaVersaoListProps) {
   if (!data.length) {
     return (
       <div className="card p-6 text-sm text-slate-600">
@@ -79,6 +88,11 @@ export function NotaVersaoList({ data, onEdit, onDelete }: NotaVersaoListProps) 
           </tbody>
         </table>
       </div>
+      {pagination && (
+        <div className="border-t border-slate-100 px-4 py-3 text-xs text-slate-500">
+          Exibindo {data.length} de {pagination.totalItems} notas | Pagina {pagination.page} de {pagination.totalPages}
+        </div>
+      )}
     </div>
   );
 }

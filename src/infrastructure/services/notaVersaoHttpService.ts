@@ -1,5 +1,7 @@
 import {
   NotaVersaoCreateInput,
+  NotaVersaoListQuery,
+  NotaVersaoListResponse,
   NotaVersaoResponse,
   NotaVersaoUpdateInput,
 } from "@/domain/models/notaVersao";
@@ -12,8 +14,19 @@ const API_BASE_URL =
 export class NotaVersaoHttpService implements NotaVersaoService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  list(): Promise<NotaVersaoResponse[]> {
-    return this.httpClient.request<NotaVersaoResponse[]>("/nota-versao");
+  list(query?: NotaVersaoListQuery): Promise<NotaVersaoListResponse> {
+    const searchParams = new URLSearchParams();
+    if (query?.page !== undefined) {
+      searchParams.set("page", String(query.page));
+    }
+    if (query?.pageSize !== undefined) {
+      searchParams.set("pageSize", String(query.pageSize));
+    }
+    const path =
+      searchParams.toString()
+        ? `/nota-versao?${searchParams.toString()}`
+        : "/nota-versao";
+    return this.httpClient.request<NotaVersaoListResponse>(path);
   }
 
   get(id: number): Promise<NotaVersaoResponse> {

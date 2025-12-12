@@ -7,20 +7,29 @@ import {
 
 import {
   NotaVersaoCreateInput,
+  NotaVersaoListQuery,
+  NotaVersaoListResponse,
   NotaVersaoResponse,
   NotaVersaoUpdateInput,
 } from "@/domain/models/notaVersao";
 import { notaVersaoService } from "@/infrastructure/services/notaVersaoHttpService";
 
 const queryKeys = {
-  all: ["nota-versao"] as const,
+  all: (page: number, pageSize: number) =>
+    ["nota-versao", "list", page, pageSize] as const,
   detail: (id: number) => ["nota-versao", id] as const,
 };
 
-export function useNotaVersaoList() {
-  return useQuery({
-    queryKey: queryKeys.all,
-    queryFn: () => notaVersaoService.list(),
+const DEFAULT_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 20;
+
+export function useNotaVersaoList(options?: NotaVersaoListQuery) {
+  const page = options?.page ?? DEFAULT_PAGE;
+  const pageSize = options?.pageSize ?? DEFAULT_PAGE_SIZE;
+
+  return useQuery<NotaVersaoListResponse, Error, NotaVersaoListResponse>({
+    queryKey: queryKeys.all(page, pageSize),
+    queryFn: () => notaVersaoService.list({ page, pageSize }),
   });
 }
 
@@ -46,7 +55,7 @@ export function useNotaVersaoMutations(): Mutations {
   const queryClient = useQueryClient();
 
   const invalidateList = () =>
-    queryClient.invalidateQueries({ queryKey: queryKeys.all });
+    queryClient.invalidateQueries({ queryKey: ["nota-versao"] });
 
   const create = useMutation({
     mutationFn: (payload: NotaVersaoCreateInput) =>

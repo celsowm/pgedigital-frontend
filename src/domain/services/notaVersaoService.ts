@@ -1,11 +1,13 @@
 import {
   NotaVersaoCreateInput,
+  NotaVersaoListQuery,
+  NotaVersaoListResponse,
   NotaVersaoResponse,
   NotaVersaoUpdateInput,
 } from "@/domain/models/notaVersao";
 
 export interface NotaVersaoService {
-  list(): Promise<NotaVersaoResponse[]>;
+  list(query?: NotaVersaoListQuery): Promise<NotaVersaoListResponse>;
   get(id: number): Promise<NotaVersaoResponse>;
   create(payload: NotaVersaoCreateInput): Promise<NotaVersaoResponse>;
   update(id: number, payload: NotaVersaoUpdateInput): Promise<NotaVersaoResponse>;

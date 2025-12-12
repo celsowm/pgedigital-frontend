@@ -13,8 +13,18 @@ import { useNotaVersaoList, useNotaVersaoMutations } from "@/hooks/useNotaVersao
 
 export default function NotaVersaoPage() {
   const [selected, setSelected] = useState<NotaVersaoResponse | null>(null);
-  const { data: notas = [], isLoading, isError, error } = useNotaVersaoList();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const {
+    data: notasResponse,
+    isLoading,
+    isError,
+    error,
+  } = useNotaVersaoList({ page, pageSize });
+  const notas = notasResponse?.items ?? [];
+  const pagination = notasResponse?.pagination;
   const { create, update, remove } = useNotaVersaoMutations();
+  const pageOptions = [5, 10, 20, 50];
 
   const handleSubmit = async (payload: NotaVersaoCreateInput) => {
     if (selected) {
@@ -32,6 +42,21 @@ export default function NotaVersaoPage() {
     if (!wantDelete) return;
     await remove.mutateAsync(nota.id);
     if (selected?.id === nota.id) setSelected(null);
+  };
+
+  const handlePreviousPage = () => {
+    if (!pagination?.hasPreviousPage) return;
+    setPage((current) => Math.max(1, current - 1));
+  };
+
+  const handleNextPage = () => {
+    if (!pagination?.hasNextPage) return;
+    setPage((current) => current + 1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
   };
 
   return (
@@ -76,11 +101,62 @@ export default function NotaVersaoPage() {
               </div>
             </div>
           ) : (
-            <NotaVersaoList
-              data={notas}
-              onEdit={(nota) => setSelected(nota)}
-              onDelete={handleDelete}
-            />
+            <div className="space-y-3">
+              <div className="flex flex-col gap-3 rounded border border-slate-100 bg-white px-4 py-3 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className="btn-ghost text-xs"
+                    onClick={handlePreviousPage}
+                    disabled={!pagination?.hasPreviousPage}
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-ghost text-xs"
+                    onClick={handleNextPage}
+                    disabled={!pagination?.hasNextPage}
+                  >
+                    Proxima
+                  </button>
+                </div>
+                <div className="flex flex-wrap items-center gap-1 text-slate-600">
+                  <span className="font-semibold text-slate-900">
+                    Pagina {pagination?.page ?? page}
+                  </span>
+                  <span>de {pagination?.totalPages ?? "-"}</span>
+                  <span className="text-slate-400">
+                    ({pagination?.totalItems ?? notas.length} itens)
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <label htmlFor="page-size" className="text-slate-500">
+                    Itens por pagina
+                  </label>
+                  <select
+                    id="page-size"
+                    className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 outline-none focus:border-brand-primary"
+                    value={pageSize}
+                    onChange={(event) =>
+                      handlePageSizeChange(Number(event.target.value))
+                    }
+                  >
+                    {pageOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <NotaVersaoList
+                data={notas}
+                pagination={pagination}
+                onEdit={(nota) => setSelected(nota)}
+                onDelete={handleDelete}
+              />
+            </div>
           )}
         </div>
 
